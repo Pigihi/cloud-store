@@ -42,6 +42,4 @@ public class UserRegistrationServiceImpl implements UserRegistrationServiceInter
 		return user;
 	}
 
-	
-
 }
