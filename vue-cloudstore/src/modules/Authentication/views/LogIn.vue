@@ -25,6 +25,13 @@
             </div>
           </div>
 
+          <form action="?" method="POST">
+      <div class="g-recaptcha" data-sitekey="6LcIaEckAAAAAJ2x7OKZsJysiEVQ2hyo3dFs6Rq4" ></div>
+      <br/>
+      <!-- <input type="submit" value="Submit"> -->
+    </form>
+
+
           <!-- <div class="notification is-danger" v-if="errors.length">
             <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
           </div> -->
@@ -104,6 +111,17 @@ export default {
 
   mounted() {
     document.title = "Log In | CloudStore";
+
+    (function (d, m) {
+      var s = document.createElement("script");
+      s.type = "text/javascript";
+      s.async = true;
+      s.src = "https://www.google.com/recaptcha/api.js";
+      var h = document.getElementsByTagName("head")[0];
+      h.appendChild(s);
+
+    }) ()
+
   },
   methods: {
     async submitForm() {

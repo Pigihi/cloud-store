@@ -42,6 +42,7 @@ export default {
         .get('/user/shop/products')
         .then(response => {
           this.shopProducts = response.data
+          // alert(this.shopProducts)
         })
         .catch(error => {
           console.log(error)

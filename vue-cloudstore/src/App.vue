@@ -185,8 +185,17 @@ export default {
   },
   mounted() {
     this.cart = this.$store.state.cart;
-    this.getGeolocationInformation();
+    // this.getGeolocationInformation();
     this.getCategories();
+
+    // (function(d, m){
+    //     var kommunicateSettings = {"appId":"YOUR_APP_ID","popupWidget":true,"automaticChatOpenOnNavigation":true};
+    //     var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+    //     s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+    //     var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
+    //     window.kommunicate = m; m._globals = kommunicateSettings;
+    //   })(document, window.kommunicate || {});
+
   },
   computed: {
     cartTotalLength() {
@@ -227,7 +236,8 @@ export default {
     },
 
     async getGeolocationInformation() {
-      const API_KEY = "ab5a99eb2c834bd5846f191401c2cfab";
+      // const API_KEY = "ab5a99eb2c834bd5846f191401c2cfab";
+      const API_KEY = "a081e277312e4671a6826d28a8496cb6";
       const API_URL =
         "https://ipgeolocation.abstractapi.com/v1/?api_key=" + API_KEY;
       const apiResponse = await fetch(API_URL);

@@ -11,58 +11,69 @@
         </div>
     </section> -->
 
-    
-
-
     <div class="columns is-multiline">
       <div class="column is-12">
-          <!-- <h2 class="is-size-2 has-text-centered">Latest products</h2> -->
+        <!-- <h2 class="is-size-2 has-text-centered">Latest products</h2> -->
       </div>
 
-      <ProductBox 
+      <ProductBox
         v-for="product in latestProducts"
         v-bind:key="product.id"
-        v-bind:product="product" />
+        v-bind:product="product"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 
-import ProductBox from '@/components/ProductBox'
+// import ProductBox from "@/components/ProductBox";
+import ProductBox from "@/components/ProductBox.vue"
 
-import * as locationService from '@/views/location'
+import * as locationService from "@/views/location";
 
 export default {
-  name: 'Home',
+  name: "Home",
   data() {
     return {
       latestProducts: [],
-      address: ""
-    }
+      address: "",
+    };
   },
   components: {
-    ProductBox
+    ProductBox,
   },
   mounted() {
-    
-
     // this.getLocationAddress()
 
     // this.getLatestProductsByPincode()
 
-    this.getLatestProducts()
+    // (function (d, m) {
+    //   var kommunicateSettings = {
+    //     appId: "209724be3ac5b0dcebd87c6e4c71e92b0",
+    //     popupWidget: true,
+    //     automaticChatOpenOnNavigation: true,
+    //   };
+    //   var s = document.createElement("script");
+    //   s.type = "text/javascript";
+    //   s.async = true;
+    //   s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+    //   var h = document.getElementsByTagName("head")[0];
+    //   h.appendChild(s);
+    //   window.kommunicate = m;
+    //   m._globals = kommunicateSettings;
+    // })(document, window.kommunicate || {});
 
-    
+    this.getLatestProducts();
 
-    document.title = 'Home | CloudStore'
-
-    
+    document.title = "Home | CloudStore";
   },
+  // data: function () {},
+
   methods: {
     async getLatestProducts() {
-      this.$store.commit('setIsLoading', true)
+      this.$store.commit("setIsLoading", true);
 
       // axios
       //   .get('/products')
@@ -75,40 +86,35 @@ export default {
 
       // this.$store.commit('setIsLoading', false)
 
-
-      await this.getLocationAddress()
+      await this.getLocationAddress();
+      // alert(this.latestProducts)
 
       // await this.getLatestProductsByPincode()
-
     },
 
     getLatestProductsByPincode(pincode) {
-      
-
       // var pincode = await this.$store.state.pincode
       axios
         .get(`/productsbypin?pincode=${pincode}`)
-        .then(response => {
-          this.latestProducts = response.data
+        // .get(`/product/allByPin?pincode=${pincode}`)
+        .then((response) => {
+          this.latestProducts = response.data;
+          // alert(this.latestProducts)
         })
-        .catch(error => {
-          console.log(error)
-        })
-
-      
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
-    async getLocationAddress(){
+    async getLocationAddress() {
       this.address = await locationService.currentAddress();
-      await this.$store.commit("setCustPincode", this.address)
-      console.log("Address: " + this.address)
+      await this.$store.commit("setCustPincode", this.address);
+      console.log("Address: " + this.address);
 
-      this.getLatestProductsByPincode(this.address)
-      this.$store.commit('setIsLoading', false)
-  }
-
-
+      this.getLatestProductsByPincode(this.address);
+      // alert(this.latestProducts)
+      this.$store.commit("setIsLoading", false);
+    },
   },
-
-}
+};
 </script>
