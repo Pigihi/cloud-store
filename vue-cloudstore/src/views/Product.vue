@@ -1,7 +1,7 @@
 <template>
   <div class="page-product">
     <div class="columns is-multiline">
-      <div class="column is-9">
+      <div class="column is-4">
         <figure class="image mb-6">
           <img
             class="product-image"
@@ -13,7 +13,14 @@
         <h1 class="title">{{ product.prodName }}</h1>
 
         <p>{{ product.category }}</p>
+    
       </div>
+
+      <div class="column is-4">
+       <iframe src="http://localhost:3001/sentiment-analyzer" 
+       name="iframe1" id="sentiment" width="500" height="600"
+       ></iframe>
+    </div>
 
       <div class="column is-3">
         <h2 class="subtitle">Information</h2>
@@ -24,7 +31,13 @@
 
         <div class="field has-addons mt-6">
           <div class="control">
-            <input type="number" class="input" min="1" v-bind:max="stock" v-model="quantity" />
+            <input
+              type="number"
+              class="input"
+              min="1"
+              v-bind:max="stock"
+              v-model="quantity"
+            />
           </div>
 
           <div class="control">
@@ -35,13 +48,27 @@
         <div class="select is-normal">
           <select>
             <option>Select Shop</option>
-            <option 
-            v-for="item in shops"
-            v-bind:key="item.shopId"
-            @click="stockUpdate(item)"
-            >{{ item.shopName }}</option>
+            <option
+              v-for="item in shops"
+              v-bind:key="item.shopId"
+              @click="stockUpdate(item)"
+            >
+              {{ item.shopName }}
+            </option>
           </select>
         </div>
+        <br />
+        <br />
+        <!-- <div>
+          <button class="button is-success">
+            <a
+              style="text-decoration: none"
+              href="http://localhost:3001/sentiment-analyzer"
+            >
+              Submit Feedback
+            </a>
+          </button>
+        </div> -->
       </div>
     </div>
   </div>
@@ -74,22 +101,21 @@ export default {
     // this.getShops();
   },
   methods: {
-
-      stockUpdate(item){
-          var tempProduct = this.$store.state.selectedProduct;
-          // var tempProduct = JSON.parse(localStorage.getItem('product'))
-          this.currProdId = tempProduct.id
-          this.currShopId = item.id
-          var tempShops = tempProduct.shops
-          for(var tmp in tempShops){
-              console.log(tempShops[tmp])
-              console.log(item.stock)
-              if(tempShops[tmp].shopId == item.id){
-                  this.stock = tempShops[tmp].stock
-              }
-          }
-          console.log(this.stock)
-      },
+    stockUpdate(item) {
+      var tempProduct = this.$store.state.selectedProduct;
+      // var tempProduct = JSON.parse(localStorage.getItem('product'))
+      this.currProdId = tempProduct.id;
+      this.currShopId = item.id;
+      var tempShops = tempProduct.shops;
+      for (var tmp in tempShops) {
+        console.log(tempShops[tmp]);
+        console.log(item.stock);
+        if (tempShops[tmp].shopId == item.id) {
+          this.stock = tempShops[tmp].stock;
+        }
+      }
+      console.log(this.stock);
+    },
 
     async getProduct() {
       this.$store.commit("setIsLoading", true);
@@ -100,14 +126,14 @@ export default {
         .get(`/product?prodId=${this.prodId}`)
         .then((response) => {
           this.product = response.data;
-          this.$store.commit("setSelectedProduct", this.product)
+          this.$store.commit("setSelectedProduct", this.product);
           // localStorage.setItem('product', JSON.stringify(this.product))
           this.shopList = response.data.shops;
 
           for (var item in this.shopList) {
-              this.shopIds.push(this.shopList[item].shopId)
+            this.shopIds.push(this.shopList[item].shopId);
           }
-          this.$store.commit("setShopIdsForProduct", this.shopIds)
+          this.$store.commit("setShopIdsForProduct", this.shopIds);
           // localStorage.setItem('shopIds', JSON.stringify(this.shopIds))
 
           document.title = this.product.prodName + " | CloudStore";
@@ -118,41 +144,39 @@ export default {
 
       this.$store.commit("setIsLoading", false);
 
-      console.log(this.product)
+      console.log(this.product);
 
       await this.getShops();
     },
 
     async getShops() {
-        var tempIds = this.$store.state.shopIdsForProduct
-        // var tempIds = JSON.parse(localStorage.getItem('shopIds'))
-        // localStorage.removeItem('shopIds')
-        console.log(tempIds)
+      var tempIds = this.$store.state.shopIdsForProduct;
+      // var tempIds = JSON.parse(localStorage.getItem('shopIds'))
+      // localStorage.removeItem('shopIds')
+      console.log(tempIds);
       var sendData = {
         shopIds: tempIds,
       };
-      axios.put("/user/shops", sendData)
-      .then((response) => {
+      axios.put("/user/shops", sendData).then((response) => {
         this.shops = response.data;
-        console.log(this.shops)
+        console.log(this.shops);
       });
-
     },
 
     addToCart() {
       if (isNaN(this.quantity) || this.quantity < 1) {
         this.quantity = 1;
       }
-      if(this.quantity > this.stock){
-            this.quantity = 1
-            return
-        }
-        this.stock = this.stock - this.quantity
+      if (this.quantity > this.stock) {
+        this.quantity = 1;
+        return;
+      }
+      this.stock = this.stock - this.quantity;
 
       const item = {
         product: this.product,
         quantity: this.quantity,
-        currentShopId: this.currShopId
+        currentShopId: this.currShopId,
       };
 
       this.$store.commit("addToCart", item);

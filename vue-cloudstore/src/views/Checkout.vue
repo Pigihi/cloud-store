@@ -109,6 +109,10 @@
           <button class="button is-dark" @click="submitForm">
             Pay with PayTm
           </button>
+
+           <button class="button is-dark" @click="submitCryptoForm">
+            Pay with Cryptocurrency
+          </button>
         </template>
       </div>
     </div>
@@ -292,6 +296,104 @@ export default {
 
         // this.paytmJsCheckout();
       }
+    },
+
+    submitCryptoForm(){
+
+      this.errors = [];
+
+      if (this.first_name === "") {
+        this.errors.push("The first name field is missing!");
+      }
+
+      if (this.last_name === "") {
+        this.errors.push("The last name field is missing!");
+      }
+
+      if (this.email === "") {
+        this.errors.push("The email field is missing!");
+      }
+
+      if (this.phone === "") {
+        this.errors.push("The phone field is missing!");
+      }
+
+      if (this.address === "") {
+        this.errors.push("The address field is missing!");
+      }
+
+      if (this.zipcode === "") {
+        this.errors.push("The zip code field is missing!");
+      }
+
+      if (this.place === "") {
+        this.errors.push("The place field is missing!");
+      }
+
+      if (!this.errors.length) {
+        this.$store.commit("setIsLoading", true);
+
+        this.storeAddress();
+
+        // this.createOrder();
+
+        // this.paytmJsCheckout();
+
+        // if(typeof web3 !== 'undefined'){
+          // for (let itemIndex in cart.items){
+          //   let cryptoItem = cart.items[itemIndex]
+          //   this.totalAmtReturned += cryptoItem.product.price * cryptoItem.quantity
+          // }
+        //   web3.eth.sendTransaction({
+        //     to: '0x14e69DF74fb4CB223639e8F015bf86225D091981',
+        //     value: this.cartTotalPrice
+        //   })
+        // }
+
+        var valueInBnb = this.cartTotalPrice * 0.000038586;
+
+        var valueInHex = '0x' + (valueInBnb * 1000000000000000000).toString(16);
+        this.payinCrypto(valueInHex)
+        console.log("Total Value in Crypto: " + valueInHex);
+        // web3.utils.numberToHex(this.cartTotalPrice))
+
+      }
+
+    },
+
+    async payinCrypto(value){
+
+      // try {
+  // const transactionHash = 
+  await ethereum.request({
+    method: 'eth_sendTransaction',
+    params: [
+      {
+        to: '0x14e69DF74fb4CB223639e8F015bf86225D091981',
+        from: '0x4532AF99DAA374E1bCF5DdF44924e6C1c018A848',
+        value: value,
+        // value: '0x29a2241af62c0000',
+        // And so on...
+      },
+    ],
+  })
+  .then((result) => {
+    console.log(result);
+    this.$store.commit("setIsLoading", false);
+  })
+  .catch((error) => {
+    console.log(error)
+    this.$store.commit("setIsLoading", false);
+  });
+  // Handle the result
+  // console.log(transactionHash);
+  // this.$store.commit("setIsLoading", false);
+// } 
+// catch (error) {
+//   console.error(error);
+//   this.$store.commit("setIsLoading", false);
+// }
+
     },
 
     storeAddress(deliveryAddress) {
